@@ -1,0 +1,1 @@
+![Project Architecture](./docs/images/clean_architecture.png)
