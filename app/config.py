@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import computed_field
 
 
 class Settings(BaseSettings):
@@ -21,8 +22,14 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
 
-    REDIS_URL: str
+    REDIS_HOST: str
     REDIS_PASSWORD: str
+    REDIS_PORT: int
+
+    @computed_field
+    @property
+    def REDIS_URL(self) -> str:
+        return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}"
 
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
