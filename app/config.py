@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
@@ -16,7 +17,12 @@ class Settings(BaseSettings):
     # ── PostgreSQL ───────────────────────────────────────────────
     DATABASE_URL: str  # postgresql+asyncpg://user:pass@host:5432/dbname
 
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+
     REDIS_URL: str
+    REDIS_PASSWORD: str
 
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
