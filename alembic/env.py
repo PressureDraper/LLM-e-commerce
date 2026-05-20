@@ -10,9 +10,10 @@ from alembic import context
 from app.config import settings
 from app.infrastructure.database.base import Base
 
-from app.modules.products.models import Product
+from app.modules.products.models import Category, Product, ProductImage
 from app.modules.orders.models import Order, OrderItem
-from app.modules.auth.models import User
+from app.modules.auth.models import User, UserAddress
+from app.modules.ai.models import ChatSession, ChatMessage
 
 config = context.config
 

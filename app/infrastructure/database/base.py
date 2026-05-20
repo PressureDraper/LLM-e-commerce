@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class Base(DeclarativeBase):
     """
-    Shared base fro all SQLAlchemy models.
+    Shared base for all SQLAlchemy models.
     Generates __tablename__ from classname.
 
     Ej: class ProductCategory -> tabla: product_categories
@@ -22,15 +22,10 @@ class Base(DeclarativeBase):
 
 
 class IDMixin:
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
 
 
 class TimestampMixin:
-    """
-    class Product(Base, IDMixin, TimestampMixin):
-    """
-
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
