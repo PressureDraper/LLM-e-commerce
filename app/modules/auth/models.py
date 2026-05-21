@@ -1,11 +1,17 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Boolean, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infrastructure.database.base import Base, IDMixin, TimestampMixin
-from app.modules.orders.models import Order
 
+if TYPE_CHECKING:
+    from app.modules.orders.models import Order
 
 class User(Base, IDMixin, TimestampMixin):
+    __tablename__ = "users"
+
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     full_name: Mapped[str | None] = mapped_column(String(200), nullable=True)

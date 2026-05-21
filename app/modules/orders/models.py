@@ -1,12 +1,18 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infrastructure.database.base import Base, IDMixin, TimestampMixin
-from app.modules.auth.models import User
 from app.modules.products.models import Product
 
+if TYPE_CHECKING:
+    from app.modules.auth.models import User
 
 class Order(Base, IDMixin, TimestampMixin):
+    __tablename__ = "orders"
+
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="pending"
         # pending / confirmed / shipped / delivered / cancelled
