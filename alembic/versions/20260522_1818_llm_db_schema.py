@@ -1,8 +1,8 @@
-"""initial_schema
+"""llm-db-schema
 
-Revision ID: da7ca0a6bbc7
+Revision ID: 46bf1bd55940
 Revises: 
-Create Date: 2026-05-22 09:39:09.690656
+Create Date: 2026-05-22 18:18:40.038682
 """
 from typing import Sequence, Union
 
@@ -12,7 +12,7 @@ import pgvector.sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'da7ca0a6bbc7'
+revision: str = '46bf1bd55940'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
