@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.jwt import create_access_token
 from app.modules.auth.repository import AuthRepository
-from app.modules.auth.schemas import TokenResponse, UserLogin, UserRegister, UserResponse
+from app.modules.auth.schemas import AddressResponse, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -38,6 +38,24 @@ class AuthService:
         
         token = create_access_token(user.id, user.role)
         return TokenResponse(access_token=token)
+    
+    async def get_profile(self, user_id: int) -> UserResponse:
+        user = await self.repo.get_by_id(user_id)
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
+        return UserResponse.model_validate(user)
+    
+    async def update_profile(self, user_id: int, data: UserUpdate) -> UserResponse:
+        user = await self.repo.get_by_id(user_id)
 
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        
+        updated = await self.repo.update(user, data.model_dump(exclude_unset=True))
+        return UserResponse.model_validate(updated)
 
+    async def get_addresses(self, user_id: int) -> list[AddressResponse]:
+        addresses = await self.repo.get_addresses(user_id)
+        return [AddressResponse.model_validate(addr) for addr in addresses]
