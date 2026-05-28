@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.jwt import create_access_token
 from app.modules.auth.repository import AuthRepository
-from app.modules.auth.schemas import AddressResponse, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
+from app.modules.auth.schemas import AddressCreate, AddressResponse, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -59,3 +59,7 @@ class AuthService:
     async def get_addresses(self, user_id: int) -> list[AddressResponse]:
         addresses = await self.repo.get_addresses(user_id)
         return [AddressResponse.model_validate(addr) for addr in addresses]
+    
+    async def create_address(self, user_id: int, data: AddressCreate) -> AddressResponse:
+        address = await self.repo.create_address(user_id, data.model_dump())
+        return AddressResponse.model_validate(address)

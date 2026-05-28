@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.database.session import get_db
 from app.modules.auth.jwt import get_current_user
-from app.modules.auth.schemas import TokenPayload, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
+from app.modules.auth.schemas import AddressCreate, AddressResponse, TokenPayload, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
 from app.modules.auth.service import AuthService
 
 
@@ -35,3 +35,18 @@ async def update_profile(
     service: AuthService = Depends(get_service)
 ):
     return await service.update_profile(current_user.sub, body)
+
+@router.get("/profile/addresses", response_model=list[UserResponse])
+async def get_addresses(
+    current_user: TokenPayload = Depends(get_current_user),
+    service: AuthService = Depends(get_service)
+):
+    return await service.get_addresses(current_user.sub)
+
+@router.post("/profile/addresses", response_model=AddressResponse, status_code=201)
+async def create_address(
+    body: AddressCreate,
+    current_user: TokenPayload = Depends(get_current_user),
+    service: AuthService = Depends(get_service)
+):
+    return await service.create_address(current_user.sub, body)
