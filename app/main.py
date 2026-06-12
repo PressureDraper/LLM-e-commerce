@@ -8,6 +8,7 @@ from app.infrastructure.database.session import init_db
 from app.infrastructure.cache.redis import init_redis, close_redis
 
 from app.modules.auth.router import router as auth_router
+from app.modules.admin.router import router as admin_router
 """ from app.modules.products.router import router as products_router
 from app.modules.orders.router import router as orders_router
 from app.modules.cart.router import router as cart_router
@@ -46,7 +47,8 @@ app.add_middleware(
 
 
 # ── Routers registration ─────────────────────────────────────────────────────
-app.include_router(auth_router,     prefix="/api/v1/auth",     tags=["Auth"])
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["Auth"])
+app.include_router(admin_router, prefix="/api/v1/admin", tags=["Admin"])
 """ app.include_router(products_router, prefix="/api/v1/products", tags=["Products"])
 app.include_router(orders_router,   prefix="/api/v1/orders",   tags=["Orders"])
 app.include_router(cart_router,     prefix="/api/v1/cart",     tags=["Cart"])
