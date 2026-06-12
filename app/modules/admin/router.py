@@ -15,4 +15,4 @@ def get_service(db: AsyncSession = Depends(get_db)) -> AdminService:
 
 @router.get("/settings", response_model=SettingsResponse)
 async def get_settings(service: AdminService = Depends(get_service)):
-    return await { "sail": True, "data": service.get_settings() }
+    return await service.get_settings()
