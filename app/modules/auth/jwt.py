@@ -53,8 +53,11 @@ def get_current_user(request: Request) -> TokenPayload:
 
 
 def require_admin(
-    current_user: TokenPayload = Depends(get_current_user),
+    request: Request,
 ) -> TokenPayload:
+    
+    current_user = get_current_user(request)
+
     if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
