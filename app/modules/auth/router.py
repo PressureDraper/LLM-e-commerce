@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.infrastructure.database.session import get_db
 from app.modules.auth.jwt import get_current_user
-from app.modules.auth.schemas import AddressCreate, AddressResponse, TokenPayload, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
+from app.modules.auth.schemas import AddressCreate, AddressResponse, UserLogin, UserRegister, UserResponse, UserUpdate
 from app.modules.auth.service import AuthService
 
 

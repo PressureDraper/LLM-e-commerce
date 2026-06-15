@@ -21,6 +21,7 @@ dependencies = [
     # ─── Auth (JWT propio) ───────────────────────────────────────
     "python-jose[cryptography]>=3.3", # encode/decode JWT
     "passlib[bcrypt]>=1.7",           # hash de passwords
+    "bcrypt==3.2.2",
 
     # ─── Cache / Sesiones ────────────────────────────────────────
     "redis>=5.0",            # carrito, sesiones, rate limiting
