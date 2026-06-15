@@ -29,7 +29,7 @@ async def login(body: UserLogin, response: Response, service: AuthService = Depe
         value=token,
         httponly=True,
         secure=settings.APP_ENV == "production",
-        samesite="strict",
+        samesite="lax",
         max_age=settings.JWT_EXPIRE_MINUTES * 60
     )
 
@@ -42,7 +42,7 @@ async def logout(response: Response):
         key="access_token",
         httponly=True,
         secure=settings.APP_ENV == "production",
-        samesite="strict"
+        samesite="lax"
     )
 
 
