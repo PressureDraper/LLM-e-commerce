@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, timedelta
 
 from jose import JWTError, jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from app.config import settings
@@ -33,10 +33,23 @@ def decode_token(token: str) -> TokenPayload:
             detail="Invalid or expired token",
         )
 
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-) -> TokenPayload:
-    return decode_token(credentials.credentials)
+def get_current_user(request: Request) -> TokenPayload:
+    token: str | None = None
+    
+    token = request.cookies.get("access_token")
+
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+    
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+
+    return decode_token(token)
 
 
 def require_admin(
