@@ -24,11 +24,11 @@ class AuthService:
 
         return UserResponse.model_validate(user)
     
-    async def login(self, data: UserLogin) -> TokenResponse:
+    async def login(self, data: UserLogin) -> tuple[UserResponse, str]:
         user = await self.repo.get_by_email(data.email)
 
         if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No user found with these credentials")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No user found with this email")
         
         if not pwd_context.verify(data.password, user.hashed_password):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -37,7 +37,7 @@ class AuthService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled")
         
         token = create_access_token(user.id, user.role)
-        return TokenResponse(access_token=token)
+        return UserResponse.model_validate(user), token
     
     async def get_profile(self, user_id: int) -> UserResponse:
         user = await self.repo.get_by_id(user_id)

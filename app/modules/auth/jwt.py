@@ -12,7 +12,7 @@ bearer_scheme = HTTPBearer()
 def create_access_token(user_id: int, role: str) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_EXPIRE_MINUTES)
     payload = {
-        "sub": str(user_id),
+        "sub": str(user_id), #subject of JWT
         "role": role,
         "exp": expire,
     }
