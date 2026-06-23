@@ -30,6 +30,20 @@ class AuthRepository:
         self.db.add(user)
         await self.db.flush()
         return user
+    
+    async def create_oauth_user(self, email: str, full_name: str | None, avatar_url: str, provider: str) -> User:
+        user = User(
+            email=email,
+            hashed_password=None,
+            full_name=full_name,
+            avatar_url=avatar_url,
+            oauth_provider=provider,
+            role="customer",
+            is_verified=True
+        )
+        self.db.add(user)
+        await self.db.flush()
+        return user
 
     async def update(self, user: User, data: dict) -> User:
         for key, value in data.items():
