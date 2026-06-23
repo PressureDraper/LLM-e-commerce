@@ -13,9 +13,15 @@ class User(Base, IDMixin, TimestampMixin):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    hashed_password: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )
     full_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    oauth_provider: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )
 
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="customer")    
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
