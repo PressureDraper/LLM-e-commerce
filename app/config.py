@@ -46,6 +46,11 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: str
     R2_ENDPOINT_URL: str
 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str
+    FRONTEND_URL: str
+
 
 # singleton — it's imported this way in all app:
 # from app.config import settings
