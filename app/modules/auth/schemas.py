@@ -20,6 +20,11 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class OAuthUserLogin(BaseModel):
+    email: EmailStr
+    full_name: str | None
+    avatar_url: str | None
+    provider: str
 
 class TokenResponse(BaseModel):
     access_token: str

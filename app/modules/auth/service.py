@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.jwt import create_access_token
 from app.modules.auth.repository import AuthRepository
-from app.modules.auth.schemas import AddressCreate, AddressResponse, TokenResponse, UserLogin, UserRegister, UserResponse, UserUpdate
+from app.modules.auth.schemas import AddressCreate, AddressResponse, OAuthUserLogin, UserLogin, UserRegister, UserResponse, UserUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -35,6 +35,25 @@ class AuthService:
         
         if not user.is_active:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled")
+        
+        token = create_access_token(user.id, user.role)
+        return UserResponse.model_validate(user), token
+    
+    async def oauth_login(self, data: OAuthUserLogin) -> tuple[UserResponse, str]:
+        user = await self.repo.get_by_email(data.email)
+
+        if not user:
+            user = await self.repo.create_oauth_user(
+                email=data.email,
+                full_name=data.full_name,
+                avatar_url=data.avatar_url,
+                provider=data.provider
+            )
+        elif not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account disabled"
+            )
         
         token = create_access_token(user.id, user.role)
         return UserResponse.model_validate(user), token
