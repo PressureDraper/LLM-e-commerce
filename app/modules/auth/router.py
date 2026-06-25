@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, Request, Response
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.infrastructure.database.session import get_db
 from app.modules.auth.jwt import get_current_user
+from app.modules.auth.oauth import exchange_code_for_token, get_google_auth_url, get_google_user_info
 from app.modules.auth.schemas import AddressCreate, AddressResponse, UserLogin, UserRegister, UserResponse, UserUpdate
 from app.modules.auth.service import AuthService
 
@@ -45,6 +47,35 @@ async def logout(response: Response):
         samesite="lax"
     )
 
+#Google OAuth 2
+@router.get("/google")
+async def google_login():
+    #frontend redirects to this endpoint and gets auth url
+    return RedirectResponse(url=get_google_auth_url())
+
+@router.get("/google/callback")
+async def google_callback(code: str, service: AuthService = Depends(get_service)):
+    google_token = await exchange_code_for_token(code)
+    profile = await get_google_user_info(google_token)
+
+    user, jwt_token = await service.oauth_login(
+        email=profile["email"],
+        full_name=profile.get("name"),
+        avatar_url=profile.get("picture"),
+        provider="google"
+    )
+
+    redirect = RedirectResponse(url=f"{settings.FRONTEND_URL}/")
+    redirect.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=settings.APP_ENV == "production",
+        samesite="lax",
+        max_age=settings.JWT_EXPIRE_MINUTES * 60
+    )
+
+    return redirect
 
 @router.get("/profile", response_model=UserResponse)
 async def get_profile(request: Request, service: AuthService = Depends(get_service)):
