@@ -6,7 +6,7 @@ from app.config import settings
 from app.infrastructure.database.session import get_db
 from app.modules.auth.jwt import get_current_user
 from app.modules.auth.oauth import exchange_code_for_token, get_google_auth_url, get_google_user_info
-from app.modules.auth.schemas import AddressCreate, AddressResponse, UserLogin, UserRegister, UserResponse, UserUpdate
+from app.modules.auth.schemas import AddressCreate, AddressResponse, OAuthUserLogin, UserLogin, UserRegister, UserResponse, UserUpdate
 from app.modules.auth.service import AuthService
 
 
@@ -58,12 +58,13 @@ async def google_callback(code: str, service: AuthService = Depends(get_service)
     google_token = await exchange_code_for_token(code)
     profile = await get_google_user_info(google_token)
 
-    user, jwt_token = await service.oauth_login(
-        email=profile["email"],
-        full_name=profile.get("name"),
-        avatar_url=profile.get("picture"),
-        provider="google"
-    )
+    oauth_data = OAuthUserLogin(
+    email=profile["email"],
+    full_name=profile.get("name"),
+    avatar_url=profile.get("picture"),
+    provider="google",
+)
+    user, jwt_token = await service.oauth_login(oauth_data)
 
     redirect = RedirectResponse(url=f"{settings.FRONTEND_URL}/")
     redirect.set_cookie(
