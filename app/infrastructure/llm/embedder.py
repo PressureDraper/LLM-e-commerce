@@ -14,3 +14,15 @@ async def embed_text(text: str) -> list[float]:
         embedding_types=["float"]
     )
     return response.embeddings.float[0]
+
+async def embed_query(text: str) -> list[float]:
+    # generates embeddings from a user query
+    #uses different input_type="search_query" for better accuracy in search results
+    client = get_embedder()
+    response = await client.embed(
+        texts=[text],
+        model=settings.COHERE_EMBED_MODEL,
+        input_type="search_query",
+        embedding_types=["float"]
+    )
+    return response.embeddings.float[0]
