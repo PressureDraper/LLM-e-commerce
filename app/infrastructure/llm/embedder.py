@@ -15,9 +15,10 @@ async def embed_text(text: str) -> list[float]:
     )
     return response.embeddings.float[0]
 
+
 async def embed_query(text: str) -> list[float]:
     # generates embeddings from a user query
-    #uses different input_type="search_query" for better accuracy in search results
+    # uses different input_type="search_query" for better accuracy in search results
     client = get_embedder()
     response = await client.embed(
         texts=[text],
@@ -27,11 +28,12 @@ async def embed_query(text: str) -> list[float]:
     )
     return response.embeddings.float[0]
 
+
 async def embed_batch(texts: list[str]) -> list[list[float]]:
-    #generates embeddings from multiple texts in a single call
+    # generates embeddings from multiple texts in a single call depending on chunks length
     client = get_embedder()
-    
-    #cohere free tier limit: 96 texts per request
+
+    # cohere free tier limit: 96 texts per request
     BATCH_SIZE = 96
     all_embeddings: list[list[float]] = []
 
@@ -44,6 +46,5 @@ async def embed_batch(texts: list[str]) -> list[list[float]]:
             embedding_types=["float"]
         )
         all_embeddings.extend(response.embeddings.float)
-    
-    return all_embeddings
 
+    return all_embeddings
